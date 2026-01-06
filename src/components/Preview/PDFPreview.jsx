@@ -91,6 +91,7 @@ const preProcessDocDef = async (docDef) => {
       delete node._id;
       delete node.type;
       delete node.name;
+      delete node.repeatable;
 
       if (node.barcode) {
         const barcodeImage = convertBarcodeToImage(node);
@@ -172,8 +173,8 @@ const PDFPreview = () => {
 
         const getDataUrlPromise = new Promise((resolve, reject) => {
             const id = setTimeout(() => {
-                reject(new Error("PDF Generation timed out (3s). Check console for details."));
-            }, 3000);
+                reject(new Error("PDF Generation timed out (10s). Check console for details."));
+            }, 10000);
 
             try {
                 const potentialPromise = pdfDocGenerator.getDataUrl((dataUrl) => {

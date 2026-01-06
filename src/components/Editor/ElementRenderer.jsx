@@ -225,7 +225,7 @@ const ElementRenderer = ({ element }) => {
     }
 
     if (element.table) {
-      const { body } = element.table;
+      const { body, headerRows = 1 } = element.table;
 
       const coveredCells = new Set();
 
@@ -238,43 +238,51 @@ const ElementRenderer = ({ element }) => {
           }}
         >
           <tbody>
-            {body.map((row, rIdx) => (
-              <tr key={rIdx}>
-                {row.map((cell, cIdx) => {
-                  if (!cell) {
-                    return <td key={cIdx} />;
-                  }
+            {body.map((row, rIdx) => {
+              const isHeaderRow = rIdx < headerRows;
+              return (
+                <tr key={rIdx}>
+                  {row.map((cell, cIdx) => {
+                    if (!cell) {
+                      return <td key={cIdx} />;
+                    }
 
-                  const cellKey = `${rIdx}-${cIdx}`;
+                    const cellKey = `${rIdx}-${cIdx}`;
 
-                  if (coveredCells.has(cellKey)) {
-                    return null;
-                  }
+                    if (coveredCells.has(cellKey)) {
+                      return null;
+                    }
 
-                  const colSpan = cell.colSpan || 1;
-                  const rowSpan = cell.rowSpan || 1;
+                    const colSpan = cell.colSpan || 1;
+                    const rowSpan = cell.rowSpan || 1;
 
-                  for (let r = 0; r < rowSpan; r++) {
-                    for (let c = 0; c < colSpan; c++) {
-                      if (r !== 0 || c !== 0) {
-                        coveredCells.add(`${rIdx + r}-${cIdx + c}`);
+                    for (let r = 0; r < rowSpan; r++) {
+                      for (let c = 0; c < colSpan; c++) {
+                        if (r !== 0 || c !== 0) {
+                          coveredCells.add(`${rIdx + r}-${cIdx + c}`);
+                        }
                       }
                     }
-                  }
 
-                  return (
-                    <td
-                      key={cIdx}
-                      colSpan={colSpan}
-                      rowSpan={rowSpan}
-                      style={{ border: "1px solid #ddd", padding: 4 }}
-                    >
-                      <ElementRenderer element={cell} />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+                    return (
+                      <td
+                        key={cIdx}
+                        colSpan={colSpan}
+                        rowSpan={rowSpan}
+                        style={{ 
+                          border: "1px solid #ddd", 
+                          padding: 4,
+                          backgroundColor: isHeaderRow ? "#f5f5f5" : "#fff",
+                          fontWeight: isHeaderRow ? "bold" : "normal",
+                        }}
+                      >
+                        <ElementRenderer element={cell} />
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       );

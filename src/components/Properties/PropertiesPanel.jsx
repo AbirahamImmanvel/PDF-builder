@@ -116,6 +116,8 @@ const PropertiesPanel = () => {
         barcode: selectedElement.barcode ?? null,
         type: selectedElement.type ?? null,
         fillColor: selectedElement.fillColor ?? null,
+        name: selectedElement.name ?? null,
+        repeatable: selectedElement.repeatable ?? false,
       });
     } else if (!selectedId) {
       const isCustom = typeof docDef.pageSize === "object";
@@ -359,8 +361,12 @@ const PropertiesPanel = () => {
           </span>
         </Form.Item>
 
-        <Form.Item name="name" label="Name (Key)">
-          <Input placeholder="Unique Name Identifier" />
+        <Form.Item 
+          name="name" 
+          label="Field Name"
+          tooltip="Named fields become customizable when generating PDFs"
+        >
+          <Input placeholder="e.g. customer_name, invoice_number" />
         </Form.Item>
 
         {selectedElement.table && (
@@ -499,6 +505,40 @@ const PropertiesPanel = () => {
             ))}
             <div style={{ fontSize: 10, color: "#999", marginTop: -4 }}>
               * = flexible, auto = fit content, number = px, % = percentage
+            </div>
+
+            <Divider style={{ margin: "12px 0" }}>Dynamic Data</Divider>
+            
+            <Form.Item 
+              name="name" 
+              label="Table Name"
+              tooltip="Unique identifier for this table when generating PDFs"
+            >
+              <Input placeholder="e.g. invoice_items, products" />
+            </Form.Item>
+            
+            <div style={{ 
+              backgroundColor: "#f0f7ff", 
+              padding: 12, 
+              borderRadius: 6, 
+              marginBottom: 10,
+              border: "1px solid #d0e4ff"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                <Form.Item 
+                  name="repeatable" 
+                  valuePropName="checked" 
+                  style={{ marginBottom: 0 }}
+                  noStyle
+                >
+                  <Switch />
+                </Form.Item>
+                <span style={{ fontWeight: 500 }}>Enable Add Rows</span>
+              </div>
+              <div style={{ fontSize: 11, color: "#666" }}>
+                When ON, users can add/remove data rows in the Generate page.
+                Header row stays fixed, only data rows can be added.
+              </div>
             </div>
           </div>
         )}
